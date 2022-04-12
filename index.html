@@ -11,7 +11,139 @@
   </head>
   <body>
     <main>
-      <h1>Welcome to My Website</h1>  
+      <div class="container-xl">
+        <h1>循環貸計算機</h1>
+        <!-- <p>所有欄位都支援小數點以下2位的計算，有關幣價的欄位都是以USDT進行計算</p> -->
+        <form>
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="supply-token" class="form-label">存幣的幣價(Supply Token Pricing)</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="supply-token-prefix">$</span>
+                <input type="text" class="form-control" id="supply-token" aria-describedby="supplyToken">
+              </div>
+              <div id="supply-token-help" class="form-text"></div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="borrow-token" class="form-label">借幣的幣價(Borrow Token Pricing)</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="borrow-token-prefix">$</span>
+                <input type="text" class="form-control" id="borrow-token" aria-describedby="borrowToken">
+              </div>
+              <div id="borrow-token-help" class="form-text"></div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="supply-token-apy" class="form-label">存幣的年化收益(Supply APY)</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" id="supply-token-apy" aria-describedby="supply-token-apy">
+                <span class="input-group-text" id="supply-token-apy-postfix">%</span>
+              </div>
+              <div id="supply-token-apy-help" class="form-text"></div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="borrow-token-apy" class="form-label">存幣的年化收益(borrow APY)</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" id="borrow-token-apy" aria-describedby="borrow-token-apy">
+                <span class="input-group-text" id="borrow-token-apy-postfix">%</span>
+              </div>
+              <div id="borrow-token-apy-help" class="form-text"></div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="max-ltv" class="form-label">最高貸款比率(Maximum LTV)</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" id="max-ltv" aria-describedby="borrowTokenApy">
+                <span class="input-group-text" id="max-ltv-postfix">%</span>
+              </div>
+              <div id="max-ltv-help" class="form-text">最高貸款比率，80%表示US$100等值ETH最多可貸出US$80資產</div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="liquidation-threshold" class="form-label">清算門檻(Liquidation threshold)</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" id="liquidation-threshold" aria-describedby="liquidation-threshold">
+                <span class="input-group-text" id="liquidation-threshold-postfix">%</span>
+              </div>
+              <div id="liquidation-threshold-help" class="form-text">如果是82.5%表示當LTV (貸款額除以抵押品金額）超過82.5%時你便會被斬倉，抵押的幣會被賣出償還債務</div>
+            </div>
+            
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="liquidation-penalty" class="form-label">清算罰款(Liquidation penalty)</label>
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" id="liquidation-penalty" aria-describedby="liquidation-penalty">
+                <span class="input-group-text" id="liquidation-penalty-postfix">%</span>
+              </div>
+              <div id="liquidation-penalty-help" class="form-text">如果是5%，代表當你被斬倉時，巿場會用5%折扣買入你的幣，等於變相有5%罰款</div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="starting-value" class="form-label">起始資金(Starting Value)</label>
+              <div class="input-group mb-2">
+                <span class="input-group-text" id="starting-value-prefix">$</span>
+                <input type="text" class="form-control" id="starting-value" aria-describedby="starting-value">
+              </div>
+              <div id="starting-value-help" class="form-text"></div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="lending-loops" class="form-label">循環借貸次數(Lending Loops)</label>
+              <div class="input-group mb-2">
+                <input type="number" class="form-control" id="lending-loops" aria-describedby="lending-loops">
+              </div>
+              <div id="lending-loops-help" class="form-text"></div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+            </div>
+          </div>
+        </form>
+        <h2>計算結果</h2>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Item</th>
+              <th scope="col">Content</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>總投報率(Overall Interest)</td>
+              <td>25.96%</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>存幣收益(Supply Earnings)</td>
+              <td>$727.90</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>借幣收益(Borrow Earnings)</td>
+              <td>$-611.89</td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>淨收益(Net Earnings)</td>
+              <td>$2,595.68</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="./script/index.js"></script>
