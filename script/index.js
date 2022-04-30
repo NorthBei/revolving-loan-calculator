@@ -2,7 +2,7 @@ let SA=prompt("Supply APY");
 let BA=prompt("Borrow APY");
 let LTV=prompt("LTV");
 let loop=prompt("Loop");
-let SV=parseInt(prompt("SV"));
+let SV=parseInt(prompt("Starting Value"));
 x=SV*SA;
 for(y=1;y<=loop;y++){
     x=x+SV*LTV**(y)*(SA-BA); 
