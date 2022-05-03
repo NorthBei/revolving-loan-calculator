@@ -41,15 +41,15 @@
             <div class="col-12 col-md-6 col-lg-3">
               <label for="supply-token-apy" class="form-label">存幣的年化收益(Supply APY)</label>
               <div class="input-group mb-2">
-                <input type="text" class="form-control" id="supply-token-apy" aria-describedby="supply-token-apy">
+                <input type="text" class="form-control" id="supply-token-apy" aria-describedby="supply-token-apy" value="9.4">
                 <span class="input-group-text" id="supply-token-apy-postfix">%</span>
               </div>
               <div id="supply-token-apy-help" class="form-text"></div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
-              <label for="borrow-token-apy" class="form-label">存幣的年化收益(borrow APY)</label>
+              <label for="borrow-token-apy" class="form-label">借幣的年化收益(borrow APY)</label>
               <div class="input-group mb-2">
-                <input type="text" class="form-control" id="borrow-token-apy" aria-describedby="borrow-token-apy">
+                <input type="text" class="form-control" id="borrow-token-apy" aria-describedby="borrow-token-apy" value="2.72">
                 <span class="input-group-text" id="borrow-token-apy-postfix">%</span>
               </div>
               <div id="borrow-token-apy-help" class="form-text"></div>
@@ -63,7 +63,7 @@
             <div class="col-12 col-md-6 col-lg-3">
               <label for="max-ltv" class="form-label">最高貸款比率(Maximum LTV)</label>
               <div class="input-group mb-2">
-                <input type="text" class="form-control" id="max-ltv" aria-describedby="borrowTokenApy">
+                <input type="text" class="form-control" id="max-ltv" aria-describedby="borrowTokenApy" value="80">
                 <span class="input-group-text" id="max-ltv-postfix">%</span>
               </div>
               <div id="max-ltv-help" class="form-text">最高貸款比率，80%表示US$100等值ETH最多可貸出US$80資產</div>
@@ -76,7 +76,6 @@
               </div>
               <div id="liquidation-threshold-help" class="form-text">如果是82.5%表示當LTV (貸款額除以抵押品金額）超過82.5%時你便會被斬倉，抵押的幣會被賣出償還債務</div>
             </div>
-            
             <div class="col-12 col-md-6 col-lg-3">
               <label for="liquidation-penalty" class="form-label">清算罰款(Liquidation penalty)</label>
               <div class="input-group mb-2">
@@ -94,18 +93,22 @@
               <label for="starting-value" class="form-label">起始資金(Starting Value)</label>
               <div class="input-group mb-2">
                 <span class="input-group-text" id="starting-value-prefix">$</span>
-                <input type="text" class="form-control" id="starting-value" aria-describedby="starting-value">
+                <input type="text" class="form-control" id="starting-value" aria-describedby="starting-value" value="1000">
               </div>
               <div id="starting-value-help" class="form-text"></div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
               <label for="lending-loops" class="form-label">循環借貸次數(Lending Loops)</label>
               <div class="input-group mb-2">
-                <input type="number" class="form-control" id="lending-loops" aria-describedby="lending-loops">
+                <input type="number" class="form-control" id="lending-loops" aria-describedby="lending-loops" value="6">
               </div>
               <div id="lending-loops-help" class="form-text"></div>
             </div>
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="col-12 col-md-6 col-lg-3 align-self-end">
+              <div class="input-group mb-2">
+                <button type="button" id="excuteBtn" class="excuteBtn btn btn-primary">執行試算</button>
+              </div>
+              <div class="form-text"></div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
             </div>
@@ -124,28 +127,148 @@
             <tr>
               <th scope="row">1</th>
               <td>總投報率(Overall Interest)</td>
-              <td>25.96%</td>
+              <td>
+                <span id="overallInterestValue">0%</span>
+              </td>
             </tr>
             <tr>
               <th scope="row">2</th>
               <td>存幣收益(Supply Earnings)</td>
-              <td>$727.90</td>
+              <td><span id="supplyEarningsValue">$0</span></td>
             </tr>
             <tr>
               <th scope="row">3</th>
               <td>借幣收益(Borrow Earnings)</td>
-              <td>$-611.89</td>
-            </tr>
-            <tr>
+              <td>
+                <span id="borrowEarningsValue">$0</span>
+              </td>
+            </tr><tr>
               <th scope="row">4</th>
               <td>淨收益(Net Earnings)</td>
-              <td>$2,595.68</td>
+              <td><span id="netEarningsValue">$0</span></td>
+            </tr><tr>
+              <th scope="row">5</th>
+              <td>總曝險部位</td>
+              <td><span id="totalValue">$0</span></td>
             </tr>
           </tbody>
         </table>
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="./script/index.js"></script>
+    <script>
+      document.getElementsByClassName("excuteBtn")[0].addEventListener("click", dataValidation);
+
+        function dataValidation() {
+          // check number + float
+          const supplyAPYElement = document.getElementById("supply-token-apy");
+          const borrowAPYElement = document.getElementById("borrow-token-apy");
+          const maxLTVElement = document.getElementById("max-ltv");
+          const loopNumsElement = document.getElementById("lending-loops");
+          const startValueElement = document.getElementById("starting-value");
+
+          if( isNumOrFloat(supplyAPYElement.value) === false ){
+            supplyAPYElement.style.backgroundColor = "rgba(220, 53, 69, 0.2)";
+            return null;
+          }else{
+            supplyAPYElement.style.backgroundColor = "";
+          }
+
+          if( isNumOrFloat(borrowAPYElement.value) === false ){
+             borrowAPYElement.style.backgroundColor = "rgba(220, 53, 69, 0.2)";
+             return null;
+          }else{
+            borrowAPYElement.style.backgroundColor = "";
+          }
+          
+          if( isNumOrFloat(maxLTVElement.value) === false ){
+            maxLTVElement.style.backgroundColor = "rgba(220, 53, 69, 0.2)";
+            return null;
+          }else{
+            maxLTVElement.style.backgroundColor = "";
+          }
+
+          if( isNumOrFloat(loopNumsElement.value) === false ){
+            loopNumsElement.style.backgroundColor = "rgba(220, 53, 69, 0.2)";
+            return null;
+          }else{
+            loopNumsElement.style.backgroundColor = "";
+          }
+          
+          if( isNumOrFloat(startValueElement.value) === false ){
+            startValueElement.style.backgroundColor = "rgba(220, 53, 69, 0.2)";
+            return null;
+          }else{
+            startValueElement.style.backgroundColor = "";
+          }
+
+          excutRevolvingLoan();
+        }
+
+        function isNumOrFloat(inputValue) {
+          return inputValue.match(/^-?\d*(\.\d+)?$/) === null ? false : true;
+        }
+
+        function excutRevolvingLoan() {
+          // 存幣的年化收益(Supply APY)
+          const supplyAPY = document.getElementById("supply-token-apy").value /100;
+          // 借幣的年化利息(borrow APY)
+          const borrowAPY = document.getElementById("borrow-token-apy").value /100;
+          // 最高貸款比率(Maximum LTV)
+          const maxLTV = document.getElementById("max-ltv").value /100;
+          // 起始資金(Starting Value)
+          const startValue = parseInt(document.getElementById("starting-value").value);
+          // 循環借貸次數(Lending Loops)
+          const loopNums = document.getElementById("lending-loops").value;
+
+          // 每次拿多少部位去押
+          let theRoundValue = 0;
+          // 每次貸款取得的利息
+          let yieldValue = 0;
+          // 循環貸後，全部的利息
+          let totalYieldValue = 0;
+          // 循環貸後的APY
+          let totalAPY = 0;
+          // 循環貸後的部位
+          let totalValue = 0;
+          //
+          let supplyEarning = 0
+          //
+          let brrowEarning = 0;
+
+          // ttoal APY = 29.1155123%
+          // need short amount = 3951.424 U
+
+          for (let y = 0; y <= loopNums; y++) {
+            let theRoundSupplyEarning = 0;
+            let theRoundBrrowEarning = 0;
+            theRoundValue = startValue * maxLTV ** (y);
+            totalValue += theRoundValue;
+            if( y === 0 ) {
+              // 一開始本金是自己的，不是借的，所以不用支付借款利息
+              yieldValue = theRoundValue * supplyAPY;
+              theRoundSupplyEarning = theRoundValue * supplyAPY;
+            }else{
+              theRoundSupplyEarning = theRoundValue * supplyAPY;
+              theRoundBrrowEarning = theRoundValue * borrowAPY;
+              yieldValue = theRoundValue * (supplyAPY - borrowAPY);
+            }
+
+            supplyEarning += theRoundSupplyEarning;
+            brrowEarning += theRoundBrrowEarning;
+
+            totalYieldValue = totalYieldValue + yieldValue;
+            console.log(`第 ${y} 輪, 拿 ${theRoundValue.toFixed(2)} 去押, 得到的利息為： ${yieldValue.toFixed(2)} , 目前總部位為： ${totalValue.toFixed(2)}, 總利息為：${totalYieldValue.toFixed(2)}`);
+          }
+          totalAPY =  supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;
+
+          document.getElementById("overallInterestValue").textContent = totalAPY.toFixed(2) + '%';
+          document.getElementById("supplyEarningsValue").textContent = supplyEarning.toFixed(2);
+          document.getElementById("borrowEarningsValue").textContent = brrowEarning.toFixed(2);
+          document.getElementById("netEarningsValue").textContent = '$' + totalYieldValue.toFixed(2);
+          document.getElementById("totalValue").textContent = '$' + totalValue.toFixed(2);
+          
+        }
+    </script>
   </body>
 </html>
