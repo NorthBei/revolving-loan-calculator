@@ -25,14 +25,6 @@
               <div id="supply-token-help" class="form-text"></div>
             </div>
             <div class="col-12 col-md-6 col-lg-3">
-              <label for="borrow-token" class="form-label">借幣的幣價(Borrow Token Pricing)</label>
-              <div class="input-group mb-2">
-                <span class="input-group-text" id="borrow-token-prefix">$</span>
-                <input type="text" class="form-control" id="borrow-token" aria-describedby="borrowToken">
-              </div>
-              <div id="borrow-token-help" class="form-text"></div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
             </div>
             <div class="col-12 col-md-6 col-lg-3">
             </div>
@@ -61,7 +53,7 @@
           </div>
           <div class="row">
             <div class="col-12 col-md-6 col-lg-3">
-              <label for="max-ltv" class="form-label">最高貸款比率(Maximum LTV)</label>
+              <label for="max-ltv" class="form-label">最高/貸款比率(Maximum LTV)</label>
               <div class="input-group mb-2">
                 <input type="text" class="form-control" id="max-ltv" aria-describedby="borrowTokenApy" value="80">
                 <span class="input-group-text" id="max-ltv-postfix">%</span>
@@ -114,45 +106,77 @@
             </div>
           </div>
         </form>
-        <h2>計算結果</h2>
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Item</th>
-              <th scope="col">Content</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>總投報率(Overall Interest)</td>
-              <td>
-                <span id="overallInterestValue">0%</span>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>存幣收益(Supply Earnings)</td>
-              <td><span id="supplyEarningsValue">$0</span></td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>借幣收益(Borrow Earnings)</td>
-              <td>
-                <span id="borrowEarningsValue">$0</span>
-              </td>
-            </tr><tr>
-              <th scope="row">4</th>
-              <td>淨收益(Net Earnings)</td>
-              <td><span id="netEarningsValue">$0</span></td>
-            </tr><tr>
-              <th scope="row">5</th>
-              <td>總曝險部位</td>
-              <td><span id="totalValue">$0</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="calcResult-tab" data-bs-toggle="tab" data-bs-target="#calcResult" type="button" role="tab"
+              aria-controls="calcResult" aria-selected="true">計算結果</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="calcDetail-tab" data-bs-toggle="tab" data-bs-target="#calcDetail" type="button" role="tab"
+              aria-controls="calcDetail" aria-selected="false">運算過程</button>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="calcResult" role="tabpanel" aria-labelledby="calcResult-tab">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Content</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td>總投報率(Overall Interest)</td>
+                  <td>
+                    <span id="overallInterestValue">0%</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>存幣損益(Supply Earnings)</td>
+                  <td><span id="supplyEarningsValue">$0</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td>借幣損益(Borrow Earnings)</td>
+                  <td>
+                    <span id="borrowEarningsValue">$0</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td>淨收益(Net Earnings)</td>
+                  <td><span id="netEarningsValue">$0</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td>總曝險部位</td>
+                  <td><span id="totalValue">$0</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-pane fade" id="calcDetail" role="tabpanel" aria-labelledby="calcDetail-tab">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">輪次</th>
+                  <th scope="col">押入金額</th>
+                  <th scope="col">得到利息</th>
+                  <th scope="col">總部位</th>
+                  <th scope="col">該輪增加利息</th>
+                  <th scope="col">總利息</th>
+                  <th scope="col">增加利息/初始部位</th>
+                </tr>
+              </thead>
+              <tbody class="calcDetailContent">
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -236,10 +260,7 @@
           //
           let brrowEarning = 0;
 
-          // ttoal APY = 29.1155123%
-          // need short amount = 3951.424 U
-
-          for (let y = 0; y <= loopNums; y++) {
+          for (let y = 0; y < loopNums; y++) {
             let theRoundSupplyEarning = 0;
             let theRoundBrrowEarning = 0;
             theRoundValue = startValue * maxLTV ** (y);
@@ -259,15 +280,36 @@
 
             totalYieldValue = totalYieldValue + yieldValue;
             console.log(`第 ${y} 輪, 拿 ${theRoundValue.toFixed(2)} 去押, 得到的利息為： ${yieldValue.toFixed(2)} , 目前總部位為： ${totalValue.toFixed(2)}, 總利息為：${totalYieldValue.toFixed(2)}`);
+
+            const tbodyRef = document.getElementsByClassName("calcDetailContent")[0];
+            let newTr = document.createElement("tr");
+            let newTh = document.createElement("th");
+            let newTd1 = document.createElement("td");
+            let newTd2 = document.createElement("td");
+            let newTd3 = document.createElement("td");
+            let newTd4 = document.createElement("td");
+            let newTd5 = document.createElement("td");
+            newTh.innerHTML = `第 ${y+1} 輪`;
+            newTr.appendChild(newTh);
+            newTd1.innerHTML = `拿 ${theRoundValue.toFixed(2)} 去押`;
+            newTr.appendChild(newTd1);
+            newTd2.innerHTML = `得到的利息為： ${yieldValue.toFixed(2)}`;
+            newTr.appendChild(newTd2);
+            newTd3.innerHTML = `目前總部位為： ${totalValue.toFixed(2)}`;
+            newTr.appendChild(newTd3);
+            newTd4.innerHTML = `總利息為：${totalYieldValue.toFixed(2)}`;
+            newTr.appendChild(newTd4);
+            newTd5.innerHTML = `${(yieldValue / startValue).toFixed(4) * 100} %`;
+            newTr.appendChild(newTd5);
+            tbodyRef.appendChild(newTr);
           }
           totalAPY =  supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;
 
           document.getElementById("overallInterestValue").textContent = totalAPY.toFixed(2) + '%';
-          document.getElementById("supplyEarningsValue").textContent = supplyEarning.toFixed(2);
-          document.getElementById("borrowEarningsValue").textContent = brrowEarning.toFixed(2);
+          document.getElementById("supplyEarningsValue").textContent = '$' + supplyEarning.toFixed(2);
+          document.getElementById("borrowEarningsValue").textContent = '-$' + brrowEarning.toFixed(2);
           document.getElementById("netEarningsValue").textContent = '$' + totalYieldValue.toFixed(2);
           document.getElementById("totalValue").textContent = '$' + totalValue.toFixed(2);
-          
         }
     </script>
   </body>
