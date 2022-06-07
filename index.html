@@ -157,10 +157,10 @@
                         <div id="lending-loops-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                      <label for="fee-per-round" class="form-label">每輪借貸的手續費(Fee per round)</label>
+                      <label for="fee-per-traction" class="form-label">每輪交易的手續費(Fee Per Traction)</label>
                       <div class="input-group mb-2">
                           <span class="input-group-text" id="fee-per-round-prefix">$</span>
-                          <input type="text" class="form-control" id="fee-per-round" aria-describedby="fee-per-round" data-type="2decimal-number">
+                          <input type="text" class="form-control" id="fee-per-traction" aria-describedby="fee-per-traction" data-type="2decimal-number">
                           <div class="invalid-feedback">
                               格式錯囉，只能輸入數字，支援到小數點以下2位
                           </div>
@@ -187,13 +187,11 @@
                         <label for="liquidation-threshold" class="form-label">清算門檻(Liquidation threshold)</label>
                         <div class="input-group mb-2">
                             <input type="text" class="form-control" id="liquidation-threshold" aria-describedby="liquidation-threshold" data-type="2decimal-number">
-                                
                             <span class="input-group-text" id="liquidation-threshold-postfix">%</span>
                             <div class="invalid-feedback">
                                 格式錯囉，只能輸入數字，支援到小數點以下2位
                             </div>
                         </div>
-                        
                         <div id="liquidation-threshold-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
@@ -214,8 +212,10 @@
                 <div class="my-4"></div>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-3">
+                      <span id="danger-notice"></span>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
+                      <span id="cash-back-days"></span>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                     </div>

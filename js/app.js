@@ -50,8 +50,8 @@ function calcRevolvingLoan() {
   const startValue = parseInt(document.getElementById("starting-value").value);
   // 循環借貸次數(Lending Loops)
   const loopNums = document.getElementById("lending-loops").value;
-  // 每次借貸的手續費
-  const FeePerRound = document.getElementById("fee-per-round").value;
+  // 每次交易的手續費
+  const FeePerTraction = document.getElementById("fee-per-traction").value;
 
   // 每次拿多少部位去押
   let theRoundValue = 0;
@@ -77,12 +77,13 @@ function calcRevolvingLoan() {
       // 一開始本金是自己的，不是借的，所以不用支付借款利息
       yieldValue = theRoundValue * supplyAPY;
       theRoundSupplyEarning = theRoundValue * supplyAPY;
+      yieldValue -= FeePerTraction * 2;
     } else {
       theRoundSupplyEarning = theRoundValue * supplyAPY;
       theRoundBrrowEarning = theRoundValue * borrowAPY;
       yieldValue = theRoundValue * (supplyAPY - borrowAPY);
+      yieldValue -= FeePerTraction * 3;
     }
-    yieldValue -= FeePerRound;
 
     supplyEarning += theRoundSupplyEarning;
     brrowEarning += theRoundBrrowEarning;
@@ -114,13 +115,19 @@ function calcRevolvingLoan() {
     newTr.appendChild(newTd5);
     newTd6.innerHTML = `${Math.round((totalYieldValue / startValue) * 1000) / 10} %`;
     newTr.appendChild(newTd6);
-    newTd7.innerHTML = `${FeePerRound}`;
+    if( y === 0){
+      newTd7.innerHTML = `$${FeePerTraction * 2 }`;
+    }else{
+      newTd7.innerHTML = `$${FeePerTraction * 3 }`;
+    }
     newTr.appendChild(newTd7);
 
-    
-
-
     tbodyRef.appendChild(newTr);
+
+    const supplyTokenPrice = parseFloat( document.getElementById("supply-token").value );
+    const liquidationThreshold = parseFloat( document.getElementById("liquidation-threshold").value );
+    if( supplyTokenPrice )
+    document.getElementById("danger-notice").innerHTML = `風險提示：當存幣的幣價跌至 ${supplyTokenPrice*liquidationThreshold/100} 時，會發生清算！`;
   }
   totalAPY = supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;
 
