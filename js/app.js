@@ -38,6 +38,8 @@ function checkDataValidation(event) {
 }
 
 function calcRevolvingLoan() {
+  // 每次計算前，先清掉舊的計算記錄
+  document.getElementsByClassName('calcDetailContent')[0].innerHTML = '';
   // 存幣的年化收益(Supply APY)
   const supplyAPY = document.getElementById("supply-token-apy").value / 100;
   // 借幣的年化利息(borrow APY)
@@ -48,6 +50,8 @@ function calcRevolvingLoan() {
   const startValue = parseInt(document.getElementById("starting-value").value);
   // 循環借貸次數(Lending Loops)
   const loopNums = document.getElementById("lending-loops").value;
+  // 每次交易的手續費
+  const FeePerTraction = document.getElementById("fee-per-traction").value;
 
   // 每次拿多少部位去押
   let theRoundValue = 0;
@@ -73,17 +77,19 @@ function calcRevolvingLoan() {
       // 一開始本金是自己的，不是借的，所以不用支付借款利息
       yieldValue = theRoundValue * supplyAPY;
       theRoundSupplyEarning = theRoundValue * supplyAPY;
+      yieldValue -= FeePerTraction * 2;
     } else {
       theRoundSupplyEarning = theRoundValue * supplyAPY;
       theRoundBrrowEarning = theRoundValue * borrowAPY;
       yieldValue = theRoundValue * (supplyAPY - borrowAPY);
+      yieldValue -= FeePerTraction * 3;
     }
 
     supplyEarning += theRoundSupplyEarning;
     brrowEarning += theRoundBrrowEarning;
 
     totalYieldValue = totalYieldValue + yieldValue;
-    console.log(`第 ${y} 輪, 拿 ${theRoundValue.toFixed(2)} 去押, 得到的利息為： ${yieldValue.toFixed(2)} , 目前總部位為： ${totalValue.toFixed(2)}, 總利息為：${totalYieldValue.toFixed(2)}`);
+    // console.log(`第 ${y} 輪, 拿 ${theRoundValue.toFixed(2)} 去押, 得到的利息為： ${yieldValue.toFixed(2)} , 目前總部位為： ${totalValue.toFixed(2)}, 總利息為：${totalYieldValue.toFixed(2)}`);
 
     const tbodyRef = document.getElementsByClassName("calcDetailContent")[0];
     let newTr = document.createElement("tr");
@@ -93,6 +99,8 @@ function calcRevolvingLoan() {
     let newTd3 = document.createElement("td");
     let newTd4 = document.createElement("td");
     let newTd5 = document.createElement("td");
+    let newTd6 = document.createElement("td");
+    let newTd7 = document.createElement("td");
     newTh.innerHTML = `第 ${y + 1} 輪`;
     newTr.appendChild(newTh);
     newTd1.innerHTML = `拿 ${theRoundValue.toFixed(2)} 去押`;
@@ -103,9 +111,23 @@ function calcRevolvingLoan() {
     newTr.appendChild(newTd3);
     newTd4.innerHTML = `總利息為：${totalYieldValue.toFixed(2)}`;
     newTr.appendChild(newTd4);
-    newTd5.innerHTML = `${(yieldValue / startValue).toFixed(4) * 100} %`;
+    newTd5.innerHTML = `${Math.round((yieldValue / startValue) * 1000) / 10} %`;
     newTr.appendChild(newTd5);
+    newTd6.innerHTML = `${Math.round((totalYieldValue / startValue) * 1000) / 10} %`;
+    newTr.appendChild(newTd6);
+    if( y === 0){
+      newTd7.innerHTML = `$${FeePerTraction * 2 }`;
+    }else{
+      newTd7.innerHTML = `$${FeePerTraction * 3 }`;
+    }
+    newTr.appendChild(newTd7);
+
     tbodyRef.appendChild(newTr);
+
+    const supplyTokenPrice = parseFloat( document.getElementById("supply-token").value );
+    const liquidationThreshold = parseFloat( document.getElementById("liquidation-threshold").value );
+    if( supplyTokenPrice )
+    document.getElementById("danger-notice").innerHTML = `風險提示：當存幣的幣價跌至 ${supplyTokenPrice*liquidationThreshold/100} 時，會發生清算！`;
   }
   totalAPY = supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;
 

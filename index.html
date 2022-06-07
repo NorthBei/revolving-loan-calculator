@@ -157,6 +157,15 @@
                         <div id="lending-loops-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
+                      <label for="fee-per-traction" class="form-label">每輪交易的手續費(Fee Per Traction)</label>
+                      <div class="input-group mb-2">
+                          <span class="input-group-text" id="fee-per-round-prefix">$</span>
+                          <input type="text" class="form-control" id="fee-per-traction" aria-describedby="fee-per-traction" data-type="2decimal-number">
+                          <div class="invalid-feedback">
+                              格式錯囉，只能輸入數字，支援到小數點以下2位
+                          </div>
+                      </div>
+                      <div id="fee-per-round-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                     </div>
@@ -178,13 +187,11 @@
                         <label for="liquidation-threshold" class="form-label">清算門檻(Liquidation threshold)</label>
                         <div class="input-group mb-2">
                             <input type="text" class="form-control" id="liquidation-threshold" aria-describedby="liquidation-threshold" data-type="2decimal-number">
-                                
                             <span class="input-group-text" id="liquidation-threshold-postfix">%</span>
                             <div class="invalid-feedback">
                                 格式錯囉，只能輸入數字，支援到小數點以下2位
                             </div>
                         </div>
-                        
                         <div id="liquidation-threshold-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
@@ -205,8 +212,10 @@
                 <div class="my-4"></div>
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-3">
+                      <span id="danger-notice"></span>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
+                      <span id="cash-back-days"></span>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
                     </div>
@@ -274,6 +283,7 @@
                             <th scope="col">該輪增加利息</th>
                             <th scope="col">總利息</th>
                             <th scope="col">增加利息/初始部位</th>
+                            <th scope="col">每輪借+貸的手續費</th>
                         </tr>
                     </thead>
                     <tbody class="calcDetailContent">
