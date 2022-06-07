@@ -38,6 +38,8 @@ function checkDataValidation(event) {
 }
 
 function calcRevolvingLoan() {
+  // 每次計算前，先清掉舊的計算記錄
+  document.getElementsByClassName('calcDetailContent')[0].innerHTML = '';
   // 存幣的年化收益(Supply APY)
   const supplyAPY = document.getElementById("supply-token-apy").value / 100;
   // 借幣的年化利息(borrow APY)
@@ -48,6 +50,8 @@ function calcRevolvingLoan() {
   const startValue = parseInt(document.getElementById("starting-value").value);
   // 循環借貸次數(Lending Loops)
   const loopNums = document.getElementById("lending-loops").value;
+  // 每次借貸的手續費
+  const FeePerRound = document.getElementById("fee-per-round").value;
 
   // 每次拿多少部位去押
   let theRoundValue = 0;
@@ -78,12 +82,13 @@ function calcRevolvingLoan() {
       theRoundBrrowEarning = theRoundValue * borrowAPY;
       yieldValue = theRoundValue * (supplyAPY - borrowAPY);
     }
+    yieldValue -= FeePerRound;
 
     supplyEarning += theRoundSupplyEarning;
     brrowEarning += theRoundBrrowEarning;
 
     totalYieldValue = totalYieldValue + yieldValue;
-    console.log(`第 ${y} 輪, 拿 ${theRoundValue.toFixed(2)} 去押, 得到的利息為： ${yieldValue.toFixed(2)} , 目前總部位為： ${totalValue.toFixed(2)}, 總利息為：${totalYieldValue.toFixed(2)}`);
+    // console.log(`第 ${y} 輪, 拿 ${theRoundValue.toFixed(2)} 去押, 得到的利息為： ${yieldValue.toFixed(2)} , 目前總部位為： ${totalValue.toFixed(2)}, 總利息為：${totalYieldValue.toFixed(2)}`);
 
     const tbodyRef = document.getElementsByClassName("calcDetailContent")[0];
     let newTr = document.createElement("tr");
@@ -93,6 +98,8 @@ function calcRevolvingLoan() {
     let newTd3 = document.createElement("td");
     let newTd4 = document.createElement("td");
     let newTd5 = document.createElement("td");
+    let newTd6 = document.createElement("td");
+    let newTd7 = document.createElement("td");
     newTh.innerHTML = `第 ${y + 1} 輪`;
     newTr.appendChild(newTh);
     newTd1.innerHTML = `拿 ${theRoundValue.toFixed(2)} 去押`;
@@ -103,8 +110,16 @@ function calcRevolvingLoan() {
     newTr.appendChild(newTd3);
     newTd4.innerHTML = `總利息為：${totalYieldValue.toFixed(2)}`;
     newTr.appendChild(newTd4);
-    newTd5.innerHTML = `${(yieldValue / startValue).toFixed(4) * 100} %`;
+    newTd5.innerHTML = `${Math.round((yieldValue / startValue) * 1000) / 10} %`;
     newTr.appendChild(newTd5);
+    newTd6.innerHTML = `${Math.round((totalYieldValue / startValue) * 1000) / 10} %`;
+    newTr.appendChild(newTd6);
+    newTd7.innerHTML = `${FeePerRound}`;
+    newTr.appendChild(newTd7);
+
+    
+
+
     tbodyRef.appendChild(newTr);
   }
   totalAPY = supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;

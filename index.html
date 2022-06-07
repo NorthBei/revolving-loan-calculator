@@ -157,6 +157,15 @@
                         <div id="lending-loops-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
+                      <label for="fee-per-round" class="form-label">每輪借貸的手續費(Fee per round)</label>
+                      <div class="input-group mb-2">
+                          <span class="input-group-text" id="fee-per-round-prefix">$</span>
+                          <input type="text" class="form-control" id="fee-per-round" aria-describedby="fee-per-round" data-type="2decimal-number">
+                          <div class="invalid-feedback">
+                              格式錯囉，只能輸入數字，支援到小數點以下2位
+                          </div>
+                      </div>
+                      <div id="fee-per-round-help" class="form-text"></div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                     </div>
@@ -274,6 +283,7 @@
                             <th scope="col">該輪增加利息</th>
                             <th scope="col">總利息</th>
                             <th scope="col">增加利息/初始部位</th>
+                            <th scope="col">每輪借+貸的手續費</th>
                         </tr>
                     </thead>
                     <tbody class="calcDetailContent">
