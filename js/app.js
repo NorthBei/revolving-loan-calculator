@@ -130,7 +130,7 @@ function calcRevolvingLoan() {
     // 計算每輪的回本天數
     let costBackDay = Math.ceil(totalCost/ totalYieldValue * 365);
     // console.log(`第 ${y} 輪,  總利息為：${totalYieldValue.toFixed(2)}, 總手續費為：${totalCost}`);
-    newTd8.innerHTML = `至少放 ${costBackDay} 天才有回本(手續費)`;
+    newTd8.innerHTML = `至少放 ${costBackDay} 天才能回本`;
     newTr.appendChild(newTd8);
 
     tbodyRef.appendChild(newTr);
