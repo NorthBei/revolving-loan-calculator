@@ -59,6 +59,8 @@ function calcRevolvingLoan() {
   let yieldValue = 0;
   // 循環貸後，全部的利息
   let totalYieldValue = 0;
+  // 循環貸後，全部的費用 ( 借幣利息 + 手續費 )
+  let totalCost = 0;
   // 循環貸後的APY
   let totalAPY = 0;
   // 循環貸後的部位
@@ -78,11 +80,13 @@ function calcRevolvingLoan() {
       yieldValue = theRoundValue * supplyAPY;
       theRoundSupplyEarning = theRoundValue * supplyAPY;
       yieldValue -= FeePerTraction * 2;
+      totalCost += parseFloat(FeePerTraction * 2);
     } else {
       theRoundSupplyEarning = theRoundValue * supplyAPY;
       theRoundBrrowEarning = theRoundValue * borrowAPY;
       yieldValue = theRoundValue * (supplyAPY - borrowAPY);
       yieldValue -= FeePerTraction * 3;
+      totalCost += parseFloat(FeePerTraction * 3) + parseFloat(theRoundValue * borrowAPY);
     }
 
     supplyEarning += theRoundSupplyEarning;
@@ -101,6 +105,8 @@ function calcRevolvingLoan() {
     let newTd5 = document.createElement("td");
     let newTd6 = document.createElement("td");
     let newTd7 = document.createElement("td");
+    let newTd8 = document.createElement("td");
+
     newTh.innerHTML = `第 ${y + 1} 輪`;
     newTr.appendChild(newTh);
     newTd1.innerHTML = `拿 ${theRoundValue.toFixed(2)} 去押`;
@@ -115,6 +121,7 @@ function calcRevolvingLoan() {
     newTr.appendChild(newTd5);
     newTd6.innerHTML = `${Math.round((totalYieldValue / startValue) * 1000) / 10} %`;
     newTr.appendChild(newTd6);
+
     if( y === 0){
       newTd7.innerHTML = `$${FeePerTraction * 2 }`;
     }else{
@@ -122,12 +129,19 @@ function calcRevolvingLoan() {
     }
     newTr.appendChild(newTd7);
 
-    tbodyRef.appendChild(newTr);
+    // 計算每輪的回本天數
+    let costBackDay = Math.round(totalCost/ totalYieldValue * 365);
+    // console.log(`第 ${y} 輪,  總利息為：${totalYieldValue.toFixed(2)}, 總手續費為：${totalCost}`);
+    newTd8.innerHTML = `至少放 ${costBackDay} 天才有回本(手續費)`;
+    newTr.appendChild(newTd8);
 
+    tbodyRef.appendChild(newTr);
+    
+    // 風險提示 - 清算幣價計算
     const supplyTokenPrice = parseFloat( document.getElementById("supply-token").value );
     const liquidationThreshold = parseFloat( document.getElementById("liquidation-threshold").value );
-    if( supplyTokenPrice )
-    document.getElementById("danger-notice").innerHTML = `風險提示：當存幣的幣價跌至 ${supplyTokenPrice*liquidationThreshold/100} 時，會發生清算！`;
+    if( supplyTokenPrice && liquidationThreshold)
+    document.getElementById("danger-notice").innerHTML = `風險提示：當存幣的幣價跌至<span class='text-danger'> ${supplyTokenPrice*liquidationThreshold/100}</span> 時，會發生清算！`;
   }
   totalAPY = supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;
 
