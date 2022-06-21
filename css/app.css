@@ -1,0 +1,27 @@
+.input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.input-group-text:nth-last-child(2)) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.section-fold-banner {
+  background-color: #635cdb;
+}
+
+input[type=number] {
+  height: 50px;
+}
+
+.partner-logo {
+  width: 100%;
+  /* object-fit: contain; */
+  /* filter: grayscale(1); */
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
