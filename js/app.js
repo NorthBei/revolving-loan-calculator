@@ -106,6 +106,7 @@ function calcRevolvingLoan() {
     let newTd6 = document.createElement("td");
     let newTd7 = document.createElement("td");
     let newTd8 = document.createElement("td");
+
     newTh.innerHTML = `第 ${y + 1} 輪`;
     newTr.appendChild(newTh);
     newTd1.innerHTML = `拿 ${theRoundValue.toFixed(2)} 去押`;
@@ -120,13 +121,14 @@ function calcRevolvingLoan() {
     newTr.appendChild(newTd5);
     newTd6.innerHTML = `${Math.round((totalYieldValue / startValue) * 1000) / 10} %`;
     newTr.appendChild(newTd6);
-    
+
     if( y === 0){
       newTd7.innerHTML = `$${FeePerTraction * 2 }`;
     }else{
       newTd7.innerHTML = `$${FeePerTraction * 3 }`;
     }
     newTr.appendChild(newTd7);
+
     // 計算每輪的回本天數
     let costBackDay = Math.round(totalCost/ totalYieldValue * 365);
     // console.log(`第 ${y} 輪,  總利息為：${totalYieldValue.toFixed(2)}, 總手續費為：${totalCost}`);
@@ -140,7 +142,6 @@ function calcRevolvingLoan() {
     const liquidationThreshold = parseFloat( document.getElementById("liquidation-threshold").value );
     if( supplyTokenPrice && liquidationThreshold)
     document.getElementById("danger-notice").innerHTML = `風險提示：當存幣的幣價跌至<span class='text-danger'> ${supplyTokenPrice*liquidationThreshold/100}</span> 時，會發生清算！`;
-
   }
   totalAPY = supplyAPY * totalYieldValue / (startValue * supplyAPY) * 100;
 
