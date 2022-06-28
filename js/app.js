@@ -79,14 +79,12 @@ function calcRevolvingLoan() {
       // 一開始本金是自己的，不是借的，所以不用支付借款利息
       yieldValue = theRoundValue * supplyAPY;
       theRoundSupplyEarning = theRoundValue * supplyAPY;
-      yieldValue -= FeePerTraction * 2;
       totalCost += parseFloat(FeePerTraction * 2);
     } else {
       theRoundSupplyEarning = theRoundValue * supplyAPY;
       theRoundBrrowEarning = theRoundValue * borrowAPY;
       yieldValue = theRoundValue * (supplyAPY - borrowAPY);
-      yieldValue -= FeePerTraction * 3;
-      totalCost += parseFloat(FeePerTraction * 3) + parseFloat(theRoundValue * borrowAPY);
+      totalCost += parseFloat(FeePerTraction * 3);
     }
 
     supplyEarning += theRoundSupplyEarning;
@@ -130,9 +128,9 @@ function calcRevolvingLoan() {
     newTr.appendChild(newTd7);
 
     // 計算每輪的回本天數
-    let costBackDay = Math.round(totalCost/ totalYieldValue * 365);
+    let costBackDay = Math.ceil(totalCost/ totalYieldValue * 365);
     // console.log(`第 ${y} 輪,  總利息為：${totalYieldValue.toFixed(2)}, 總手續費為：${totalCost}`);
-    newTd8.innerHTML = `至少放 ${costBackDay} 天才有回本(手續費)`;
+    newTd8.innerHTML = `至少放 ${costBackDay} 天才能回本`;
     newTr.appendChild(newTd8);
 
     tbodyRef.appendChild(newTr);
